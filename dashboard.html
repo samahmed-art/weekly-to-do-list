@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="dashboard.css" />
+    <link rel="stylesheet" href="global.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <title>Document</title>
+  </head>
+
+  <body>
+    <div style="margin-bottom: 70px">
+      <i class="fa-solid fa-box-archive heart-icon"></i>
+    </div>
+    <div class="table-container">
+      <table dir="ltr">
+        <thead>
+          <tr>
+            <th class="diagonal-split">
+<span class="top-right">tasks</span> 
+<span class="bottom-left">days</span>   
+
+     </th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+          </tr>
+          <tr>
+          </tr>
+          <tr>
+          </tr>
+          <tr>
+          </tr>
+          <tr>
+          </tr>
+          <tr>
+          </tr>
+          <tr>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+<br>
+<br>
+<br>
+
+  </body>
+                  <script src="main.js" defer></script>
+
+</html>
+<!-- <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>جدول المهام اليومية</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f9;
+      padding: 20px;
+    }
+
+    /* الحاوية للتحكم بالتمرير */
+    .table-container {
+      width: 100%;
+      max-height: 500px; /* يمكنك زيادة أو إنقاص الارتفاع حسب رغبتك */
+      overflow: auto;
+      border: 2px solid #333;
+      border-radius: 15px; /* حواف دائرية مثل صورتك */
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+      background-color: #d8d8d8; /* اللون الرمادي الموحد في الخلفية */
+      text-align: center;
+    }
+
+    th, td {
+      border: 1px solid #777; /* حدود واضحة تفصل الخلايا */
+      padding: 15px 10px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #000;
+      min-width: 120px; /* لضمان عدم انضغاط النصوص */
+    }
+
+    /* 1. تثبيت وتصميم الصف العلوي (العناوين) */
+    thead th {
+      position: sticky;
+      top: 0;
+      background-color: #c8c8c8; /* درجة أغمق قليلاً للرأس */
+      z-index: 2;
+    }
+
+    /* الخلية المشطوبة (المهام / الأيام) */
+    .diagonal-split {
+      background: linear-gradient(to top right, #c8c8c8 49.5%, #333 49.5%, #333 50.5%, #c8c8c8 50.5%);
+      position: relative;
+    }
+    .diagonal-split .top-right {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+    }
+    .diagonal-split .bottom-left {
+      position: absolute;
+      bottom: 5px;
+      left: 10px;
+    }
+
+    /* 2. تثبيت العمود الأول (الأيام) */
+    th:first-child, td:first-child {
+      position: sticky;
+      right: 0; /* استخدمنا right لأن اتجاه الصفحة RTL */
+      background-color: #c8c8c8;
+      z-index: 2;
+      min-width: 100px;
+    }
+
+    /* 3. تثبيت زاوية التقاطع (أعلى أول خلية على اليمين) */
+    thead th:first-child {
+      z-index: 3;
+      background-color: #b8b8b8;
+    }
+
+    tbody tr:hover td {
+      background-color: #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th class="diagonal-split">
+          <span class="top-right">المهام</span>
+          <span class="bottom-left">الأيام</span>
+        </th>
+        <th>تمارين</th>
+        <th>أكل صحي</th>
+        <th>كورس جافاسكريبت متقدم</th>
+        <th>انجليزي سبيك</th>
+         <th>انجليزي سبيك</th>
+        <th>الأذكار</th>
+
+        <th>الأذكار</th>
+      </tr>
+ 
+    </thead>
+
+    <tbody id="table-body">
+       
+    
+      
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // 1. مصفوفة الأيام (البيانات الداينامك)
+  const days = ["الخميس", "الجمعة", "السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء"];
+
+  // 2. استهداف الـ tbody من الـ HTML
+  const tableBody = document.getElementById("table-body");
+
+  // 3. بناء الصفوف ديناميكياً باستخدام Loop
+  days.forEach(day => {
+    // إنشاء عنصر صف جديد <tr>
+    const row = document.createElement("tr");
+
+    // إضافة العمود الأول الثابت (اليوم) ومعه 6 خلايا فارغة للمهام
+    row.innerHTML = `
+      <td><b>${day}</b></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    `;
+
+    // حقن الصف داخل الـ tbody
+    tableBody.appendChild(row);
+  });
+</script>
+
+</body>
+</html> -->

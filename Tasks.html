@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="global.css">
+    <title>Document</title>
+</head>
+<body>
+    <div dir="rtl" >
+    <div  style="display: grid; height: 70vh; place-items: center;">
+    <div style="border: 1px solid rgb(136, 164, 178);  font-size: 50px;">
+    <label> عنوان المهمة</label>
+    <input  id="task-title" style="height: 50px; width: 50%;" placeholder="تمارين" type="text">
+    <br>
+        <br>
+        <label> عدد الساعات الاجمالي للاسبوع </label>
+    <input id="task-total-hours" style="height: 50px; width: 50%;"placeholder="10" type="number" value="21" >
+     <br>
+         <br>
+     <label>نوع المهمه</label>
+    <select id="task-type"  style="height: 50px; width: 50%;">
+        <option value="flexible">توزيع تلقائى</option>
+        <option value="fixed">اختيار الايام</option>
+        <option value="event">حدث\موعد</option>
+  
+    </select>
+    </div>
+    
+        </div>
+        <div style="display: flex; justify-content: center; gap: 16px; align-items: center;">
+          <button id="create-table" style="width: 20%; height: 50px ;text-align:center; font-size:200%; border-radius: 10px;border: none; background-color:#3D404D; color: aliceblue;" >انشاء جدول</button>
+        <button type="button"  id="add-new-task" style="width: 20%; height: 50px ;text-align:center; font-size:200%; border-radius: 10px;border: none; background-color:#3D404D; color: aliceblue;">أضافه مهمه اخرى</button>
+        </div>
+        <div id="fixedFields" style="display:none;">
+
+  <h4>اختر الأيام</h4>
+
+  <label><input type="checkbox" value="Thursday"> الخميس</label>
+  <label><input type="checkbox" value="Friday"> الجمعة</label>
+  <label><input type="checkbox" value="Saturday"> السبت</label>
+  <label><input type="checkbox" value="Sunday"> الأحد</label>
+  <label><input type="checkbox" value="Monday"> الاثنين</label>
+  <label><input type="checkbox" value="Tuesday"> الثلاثاء</label>
+  <label><input type="checkbox" value="Wednesday"> الأربعاء</label>
+
+</div>
+
+
+        <div id="eventFields" style="display:none;">
+
+  <label >اختر يوم الحدث\الموعد </label>
+
+  <select id="eventDay">
+    <option>الخميس</option>
+    <option>الجمعة</option>
+    <option>السبت</option>
+    <option>الأحد</option>
+    <option>الاثنين</option>
+    <option>الثلاثاء</option>
+    <option>الأربعاء</option>
+  </select>
+
+</div>
+</div>
+</body>
+                <script src="main.js" defer></script>
+
+</html>

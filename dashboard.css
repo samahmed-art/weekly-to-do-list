@@ -1,0 +1,77 @@
+.heart-icon {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 32px;  
+  height: 32px;
+  color: #e7e7e7; 
+  border: none;
+  font-size: 30px;
+background-color:#5591AE
+}
+
+.table-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    overflow-x: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: #ffffff;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px; /* Prevents the table from getting too squished */
+}
+
+/* Styling for all table cells */
+th, td {
+    padding: 14px 20px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+}
+
+/* Styling for the top Task header row */
+thead th {
+    background-color: #2c3e50;
+    color: #ffffff;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+.diagonal-split {
+      background: linear-gradient(to top right, #2c3e50 49.5%, #ffffff 49.5%, #ffffff 50.5%, #2c3e50 50.5%);
+      position: relative;
+    }
+    .diagonal-split .top-right {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+    }
+    .diagonal-split .bottom-left {
+      position: absolute;
+      bottom: 5px;
+      left: 10px;
+    }
+
+/* Specific styling for the fixed Day column */
+.day-column {
+    background-color: #f8f9fa;
+    color: #333333;
+    font-weight: 600;
+    width: 120px; /* Keeps the day column a consistent size */
+    text-align: center;
+}
+
+/* Zebra striping for rows to make it easy to read across */
+tbody tr:nth-child(even) {
+    background-color: #f9fbfd;
+}
+
+/* Optional: Highlights a row when you hover over it */
+tbody tr:hover {
+    background-color: #f1f4f7;
+}
