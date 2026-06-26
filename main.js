@@ -673,7 +673,7 @@ if (myTable) {
 
             // حفظ وإعادة التحميل
             localStorage.setItem("myCreatedSchedule", JSON.stringify(finalSchedule));
-            alert(`تمت إضافة مهمة منتصف الأسبوع [${taskTitle}] بنجاح وتوزيع ساعاتها! `);
+                                      alert(`تمت إضافة مهمة منتصف الأسبوع [${taskTitle}] بنجاح وتوزيع ساعاتها! `);
             window.location.reload(); 
         });
     }
