@@ -579,7 +579,7 @@ if (myTable) {
             // 3. طلب نوع المهمة 
             const typeInput = prompt("أدخل نوع المهمة (اكتب 1 أو 2 أو 3):\n1 - توزيع تلقائي\n2 - اختيار أيام معينة\n3 - حدث / موعد فردي");
             if (typeInput !== "1" && typeInput !== "2" && typeInput !== "3") {
-                alert("🚨 خطأ: خيار غير صحيح! يجب عليك كتابة رقم من الخيارات المتاحة (1 أو 2 أو 3) فقط.");
+                alert(" خطأ: خيار غير صحيح! يجب عليك كتابة رقم من الخيارات المتاحة (1 أو 2 أو 3) فقط.");
                 return; // إيقاف العملية بالكامل
             }
             let taskType = "flexible";
@@ -622,7 +622,7 @@ if (myTable) {
                 if (dayPrompt && orderedDays.includes(dayPrompt.trim())) {
                     targetDays.push(dayPrompt.trim());
                 } else {
-                    alert("🚨 خطأ: اليوم المدخل غير صحيح أو لم يتم كتابته بشكل مطابق للأيام المعروضة!");
+                    alert(" خطأ: اليوم المدخل غير صحيح أو لم يتم كتابته بشكل مطابق للأيام !");
                     return; // إيقاف العملية
                 }
             }
@@ -673,7 +673,7 @@ if (myTable) {
 
             // حفظ وإعادة التحميل
             localStorage.setItem("myCreatedSchedule", JSON.stringify(finalSchedule));
-            alert(`تمت إضافة مهمة منتصف الأسبوع [${taskTitle}] بنجاح وتوزيع ساعاتها! 🎉`);
+            alert(`تمت إضافة مهمة منتصف الأسبوع [${taskTitle}] بنجاح وتوزيع ساعاتها! `);
             window.location.reload(); 
         });
     }
