@@ -158,3 +158,43 @@ tbody tr:hover {
 #weeklyProgressChart {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+/* ==========================================
+   تنسيقات خاصة بالشاشات الصغيرة (الجوال)
+   ========================================== */
+@media (max-width: 768px) {
+    
+    /* 1. تحويل الجداول أو القوائم العريضة إلى عمودية */
+    .container, .main-layout {
+        width: 100%;
+        padding: 10px;
+    }
+
+    /* إذا كنتِ تستخدمين Flexbox لتوزيع العناصر بجانب بعضها */
+    .row-container {
+        flex-direction: column; /* جعل العناصر تحت بعضها بدلاً من بجانب بعضها */
+    }
+
+    /* 2. تحجيم الجدول ليناسب الشاشة أو السماح بالتمرير الأفقي */
+    table {
+        display: block;
+        width: 100%;
+        overflow-x: auto; /* يسمح بسحب الجدول يميناً ويساراً إن كان عريضاً */
+        white-space: nowrap;
+    }
+
+    /* 3. تصغير أحجام الخطوط لتناسب المساحة الضيقة */
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    h2 {
+        font-size: 1.4rem;
+    }
+
+    /* 4. تعديل الأزرار وحقول الإدخال لتصبح مريحة للمس باليد */
+    button, input, select {
+        width: 100%; /* جعل الأزرار تأخذ العرض الكامل على الجوال */
+        margin-bottom: 10px;
+        padding: 12px; /* تكبير المساحة لتسهيل الضغط */
+    }
+}
