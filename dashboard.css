@@ -161,49 +161,56 @@ tbody tr:hover {
 /* ==========================================
    تنسيقات خاصة بالشاشات الصغيرة (الجوال)
    ========================================== */
+/* ==========================================
+   التنسيق المصلح والمضمون لشاشات الجوال
+   ========================================== */
 @media (max-width: 768px) {
     
-    /* 1. تحويل الجداول أو القوائم العريضة إلى عمودية */
-    .container, .main-layout {
+    /* 1. الحاوية هي التي تأخذ التمرير الأفقي وليس الجدول نفسه */
+    .table-container {
         width: 100%;
-        padding: 10px;
+        overflow-x: auto;          /* تفعيل السحب الأفقي هنا */
+        -webkit-overflow-scrolling: touch; /* تمرير سلس على الآيفون */
+        margin: 10px 0;
+        border-radius: 8px;
+        /* حل مشكلة اختفاء الجدول عند الـ RTL في الجوال */
+        direction: ltr; 
     }
 
-    /* إذا كنتِ تستخدمين Flexbox لتوزيع العناصر بجانب بعضها */
-    .row-container {
-        flex-direction: column; /* جعل العناصر تحت بعضها بدلاً من بجانب بعضها */
-    }
-
-    /* 2. تحجيم الجدول ليناسب الشاشة أو السماح بالتمرير الأفقي */
+    /* إعادة توجيه محتوى الجدول ليدعم العربية بالداخل دون تخريب التمرير */
     table {
-        display: block;
+        display: table !important; /* لضمان عدم تحوله إلى block */
         width: 100%;
-        overflow-x: auto; /* يسمح بسحب الجدول يميناً ويساراً إن كان عريضاً */
-        white-space: nowrap;
+        direction: rtl;            /* بقاء النصوص والترتيب من اليمين لليوم */
     }
 
-    /* 3. تصغير أحجام الخطوط لتناسب المساحة الضيقة */
-    h1 {
-        font-size: 1.8rem;
+    th, td {
+        white-space: nowrap;       /* منع النصوص من الهبوط لسطر جديد وتشويه الخلايا */
+        padding: 10px 12px;        /* تقليص الحشو قليلاً ليناسب الجوال */
+        font-size: 0.9rem;         /* تصغير الخط قليلاً */
+    }
+
+    /* 2. تصغير حاوية الـ Chart (الرسم البياني) ليتناسب مع شاشة الجوال */
+    .dashboard-chart-wrapper {
+        padding: 10px !important;
+        margin: 15px auto !important;
     }
     
-    h2 {
-        font-size: 1.4rem;
+    .dashboard-chart-wrapper div {
+        height: 220px !important; /* تقليل الارتفاع على الجوال حتى لا يملأ الشاشة */
     }
 
-    /* 4. تعديل الأزرار وحقول الإدخال لتصبح مريحة للمس باليد */
-    button, input, select {
-        width: 100%; /* جعل الأزرار تأخذ العرض الكامل على الجوال */
-        margin-bottom: 10px;
-        padding: 12px; /* تكبير المساحة لتسهيل الضغط */
+    /* 3. تعديل الأزرار وحقول الإدخال لتصبح مريحة للمس */
+    button, input, select, textarea {
+        width: 100% !important; 
+        box-sizing: border-box;
     }
-    /* ابحثي عن الحاوية التي تحتوي على الجدول واضيفي لها هذا التنسيق */
-    table {
-        display: block;          /* تحويل الجدول لعنصر ممتد */
-        width: 100%;             /* يأخذ العرض الكامل للشاشة فقط */
-        overflow-x: auto;        /* 🔥 السحر هنا: تفعيل التمرير الأفقي عند الحاجة */
-        -webkit-overflow-scrolling: touch; /* تمرير سلس جداً على الآيفون */
-        white-space: nowrap;     /* منع النصوص من النزول لسطر جديد وتخريب الخلايا */
+    
+    /* زر الأرشيف العلوي */
+    .archive-nav-btn {
+        position: static !important; /* إلغاء التموضع المطلق حتى لا يغطي المحتوى */
+        margin: 10px auto;
+        justify-content: center;
+        width: fit-content;
     }
-
 }
