@@ -9,16 +9,22 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Document</title>
   </head>
 
   <body>
     <div style="margin-bottom: 70px">
-      <i class="fa-solid fa-box-archive heart-icon"></i>
-    </div>
+ <a  href="archive.html" class="archive-nav-btn" style="position: absolute; top: 20px; left: 20px; background: #2c3e50; color: white; padding: 10px 15px; border-radius: 8px; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 5px;">
+    📁 عرض الأرشيف
+</a>    </div>
+    <div style="text-align: center; margin: 20px auto 10px auto; max-width: 1000px; font-family: sans-serif;">
+    <h3 style="color: #2c3e50; font-size: 1.1rem; background-color: #f0f4f8; padding: 10px; border-radius: 6px; display: inline-block;">
+        📅 فترة الجدول الحالي: <span id="week-range" style="color: #5591AE; font-weight: bold;">جاري الحساب...</span>
+    </h3>
+</div>
     <div class="table-container">
-      <table dir="ltr">
+      <table dir="rtl">
         <thead>
           <tr>
             <th class="diagonal-split">
@@ -30,172 +36,53 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-          </tr>
-          <tr>
-          </tr>
-          <tr>
-          </tr>
-          <tr>
-          </tr>
-          <tr>
-          </tr>
-          <tr>
-          </tr>
-          <tr>
-          </tr>
+          
         </tbody>
       </table>
     </div>
+
+    <div id="myModal" class="modal" style="display: none; ">
+  <div class="modal-content">
+    <span class="close" onclick="closePop()">&times;</span>
+    <h2>📊 تقييمك النهائي لهذا الأسبوع</h2>
+    <p>نسبة إنجازك الافتراضية: <strong id="score-result">0%</strong></p>
+    
+    <hr>
+
+    <div class="rating-section">
+      <p>قيم أداءك بنفسك هذا الأسبوع:</p>
+      <div class="stars-container">
+        <input type="radio" id="star5" name="user-rating" value="5"><label for="star5" title="ممتاز">★</label>
+        <input type="radio" id="star4" name="user-rating" value="4"><label for="star4" title="جيد جداً">★</label>
+        <input type="radio" id="star3" name="user-rating" value="3"><label for="star3" title="متوسط">★</label>
+        <input type="radio" id="star2" name="user-rating" value="2"><label for="star2" title="مقبول">★</label>
+        <input type="radio" id="star1" name="user-rating" value="1"><label for="star1" title="ضعيف">★</label>
+      </div>
+    </div>
+
+    <div class="notes-section">
+      <label for="week-notes">اكتب ملاحظاتك وخلاصة أسبوعك هنا:</label>
+      <textarea id="week-notes" rows="4" placeholder="كيف كان أسبوعك؟ ما هي العقبات أو الإنجازات المحققة..."></textarea>
+    </div>
+
+    <button id="save-review-btn">حفظ تقييم الأسبوع</button>
+  </div>
+</div>
 <br>
 <br>
 <br>
-<button id="btn">delete</button>
-  </body>
+<div class="dashboard-chart-wrapper" style="width: 100%; max-width: 750px; margin: 30px auto; padding: 20px; direction: rtl;">    
+
+
+    <div style="position: relative; width: 100%; height: 300px;">
+        <canvas id="weeklyProgressChart"></canvas>
+    </div>
+</div>
+<div style="text-align: left; margin-bottom: 15px; max-width: 1000px; margin: 0 auto 15px auto;">
+    <button id="add-mid-week-task-btn" style="background-color: #5591AE; color: white; padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">
+        ➕ إضافة مهمة جديدة الآن
+    </button>
+</div>  </body>
                   <script src="main.js" defer></script>
 
 </html>
-<!-- <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>جدول المهام اليومية</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f4f9;
-      padding: 20px;
-    }
-
-    /* الحاوية للتحكم بالتمرير */
-    .table-container {
-      width: 100%;
-      max-height: 500px; /* يمكنك زيادة أو إنقاص الارتفاع حسب رغبتك */
-      overflow: auto;
-      border: 2px solid #333;
-      border-radius: 15px; /* حواف دائرية مثل صورتك */
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    table {
-      border-collapse: separate;
-      border-spacing: 0;
-      width: 100%;
-      background-color: #d8d8d8; /* اللون الرمادي الموحد في الخلفية */
-      text-align: center;
-    }
-
-    th, td {
-      border: 1px solid #777; /* حدود واضحة تفصل الخلايا */
-      padding: 15px 10px;
-      font-size: 16px;
-      font-weight: bold;
-      color: #000;
-      min-width: 120px; /* لضمان عدم انضغاط النصوص */
-    }
-
-    /* 1. تثبيت وتصميم الصف العلوي (العناوين) */
-    thead th {
-      position: sticky;
-      top: 0;
-      background-color: #c8c8c8; /* درجة أغمق قليلاً للرأس */
-      z-index: 2;
-    }
-
-    /* الخلية المشطوبة (المهام / الأيام) */
-    .diagonal-split {
-      background: linear-gradient(to top right, #c8c8c8 49.5%, #333 49.5%, #333 50.5%, #c8c8c8 50.5%);
-      position: relative;
-    }
-    .diagonal-split .top-right {
-      position: absolute;
-      top: 5px;
-      right: 10px;
-    }
-    .diagonal-split .bottom-left {
-      position: absolute;
-      bottom: 5px;
-      left: 10px;
-    }
-
-    /* 2. تثبيت العمود الأول (الأيام) */
-    th:first-child, td:first-child {
-      position: sticky;
-      right: 0; /* استخدمنا right لأن اتجاه الصفحة RTL */
-      background-color: #c8c8c8;
-      z-index: 2;
-      min-width: 100px;
-    }
-
-    /* 3. تثبيت زاوية التقاطع (أعلى أول خلية على اليمين) */
-    thead th:first-child {
-      z-index: 3;
-      background-color: #b8b8b8;
-    }
-
-    tbody tr:hover td {
-      background-color: #e0e0e0;
-    }
-  </style>
-</head>
-<body>
-
-<div class="table-container">
-  <table>
-    <thead>
-      <tr>
-        <th class="diagonal-split">
-          <span class="top-right">المهام</span>
-          <span class="bottom-left">الأيام</span>
-        </th>
-        <th>تمارين</th>
-        <th>أكل صحي</th>
-        <th>كورس جافاسكريبت متقدم</th>
-        <th>انجليزي سبيك</th>
-         <th>انجليزي سبيك</th>
-        <th>الأذكار</th>
-
-        <th>الأذكار</th>
-      </tr>
- 
-    </thead>
-
-    <tbody id="table-body">
-       
-    
-      
-    </tbody>
-  </table>
-</div>
-
-<script>
-  // 1. مصفوفة الأيام (البيانات الداينامك)
-  const days = ["الخميس", "الجمعة", "السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء"];
-
-  // 2. استهداف الـ tbody من الـ HTML
-  const tableBody = document.getElementById("table-body");
-
-  // 3. بناء الصفوف ديناميكياً باستخدام Loop
-  days.forEach(day => {
-    // إنشاء عنصر صف جديد <tr>
-    const row = document.createElement("tr");
-
-    // إضافة العمود الأول الثابت (اليوم) ومعه 6 خلايا فارغة للمهام
-    row.innerHTML = `
-      <td><b>${day}</b></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    `;
-
-    // حقن الصف داخل الـ tbody
-    tableBody.appendChild(row);
-  });
-</script>
-
-</body>
-</html> -->

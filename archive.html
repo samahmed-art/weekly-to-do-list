@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أرشيف الأسابيع السابقة</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #4a8ca8; /* نفس درجة اللون الأزرق الخاصة بتطبيقك */
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            margin: 0;
+        }
+        .archive-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        .archive-title {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        /* بطاقة الأسبوع الواحد المتكاملة */
+        .week-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .week-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* 🎨 ستايل الجدول المطابق للداش بورد تماماً */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 10px;
+            text-align: center;
+            color: white;
+            font-size: 14px;
+        }
+        th {
+            background: rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+        }
+        .day-column {
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.15);
+            width: 100px;
+        }
+        
+        /* 📐 تقسيم الخلية الأولى المائلة ثنائية العناوين */
+        .diagonal-split {
+            position: relative;
+            background: rgba(0, 0, 0, 0.25) !important;
+            height: 55px;
+            width: 120px;
+            padding: 0 !important;
+        }
+        .diagonal-split::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top right, transparent calc(50% - 0.5px), rgba(255,255,255,0.3) 50%, transparent calc(50% + 0.5px));
+            pointer-events: none;
+        }
+        .diagonal-split .top-right {
+            position: absolute;
+            top: 6px;
+            right: 10px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+        .diagonal-split .bottom-left {
+            position: absolute;
+            bottom: 6px;
+            left: 10px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+        
+        /* تنسيق الـ Checkbox المعطل في الأرشيف لشكل جمالي نظيف */
+        .archive-checkbox {
+            pointer-events: none;
+            accent-color: #ffffff;
+            margin-right: 6px;
+            transform: scale(1.1);
+            vertical-align: middle;
+        }
+
+        /* مساحة القراف البياني */
+        .chart-wrapper {
+            height: 280px;
+            margin-bottom: 25px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        /* قسم التقييم السفلي المتوازن */
+        .review-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .stars-display {
+            color: #ffca28;
+            font-size: 22px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+        .notes-display {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.95);
+            max-width: 70%;
+            line-height: 1.5;
+        }
+
+        /* الأزرار العلوية للتحكم بالصفحة */
+        .back-btn {
+            display: inline-block;
+            background: white;
+            color: #4a8ca8;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+        }
+        .back-btn:hover {
+            background: #f0f0f0;
+        }
+        .no-data {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 80px;
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="archive-container">
+        <a href="index.html" class="back-btn">⬅ العودة لصفحة الإنشاء</a>
+        
+        <h1 class="archive-title">📁 أرشيف الجداول والتقييمات الأسبوعية</h1>
+        
+        <div id="archive-list"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const archiveList = document.getElementById("archive-list");
+            
+            // جلب مصفوفة الأسابيع المخزنة تراكمياً في الـ LocalStorage
+            const archive = localStorage.getItem("myArchive") ? JSON.parse(localStorage.getItem("myArchive")) : [];
+
+            // حالة عدم وجود أسابيع محفوظة بعد
+            if (archive.length === 0) {
+                archiveList.innerHTML = '<div class="no-data">لا توجد أسابيع مؤرشفة حالياً في سجلاتك.</div>';
+                return;
+            }
+
+            // تكرار الحلقات (Loop) لبناء كل أسبوع تم حفظه بشكل مستقل بالكامل
+            archive.forEach((week) => {
+                const card = document.createElement("div");
+                card.className = "week-card";
+
+                // 1. شريط العنوان الجانبي للأسبوع المحفوظ
+                const header = document.createElement("div");
+                header.className = "week-header";
+                header.textContent = `🗓️ النطاق الزمني للجدول: ${week.weekRange}`;
+                card.appendChild(header);
+
+                // 2. بناء الجدول التاريخي بنفس ستايل وخصائص الداش بورد
+                const table = document.createElement("table");
+                
+                // بناء خلية التقسيم المائل ورأس الجدول للأعمدة
+                let theadHTML = `
+                    <thead>
+                        <tr>
+                            <th class="diagonal-split">
+                                <span class="top-right">المهام</span>
+                                <span class="bottom-left">الايام</span>
+                            </th>
+                `;
+                week.tasksHeaders.forEach(title => {
+                    theadHTML += `<th>${title}</th>`;
+                });
+                theadHTML += `</tr></thead>`;
+                
+                // بناء صفوف الأيام السبعة والخلايا التابعة لها
+                let tbodyHTML = "<tbody>";
+                week.orderedDays.forEach((dayName, dayIdx) => {
+                    tbodyHTML += `<tr><td class="day-column">${dayName}</td>`;
+                    const dayData = week.scheduleData[dayIdx];
+                    
+                    if (dayData && dayData.task) {
+                        dayData.task.forEach(taskData => {
+                            // إذا كانت الساعات صفر أو المهمة غير نشطة في هذا اليوم تظهر علامة الفراغ '--'
+                            if (Number(taskData.hours_per_day) === 0 || taskData.is_included === false) {
+                                tbodyHTML += `<td style="color: rgba(255,255,255,0.35); font-weight: bold;">--</td>`;
+                            } else {
+                                // عرض الحالة المحفوظة (Checkbox محدد أو فارغ) غير قابل للتعديل للحفظ التاريخي
+                                const isChecked = taskData.task_status ? "checked" : "";
+                                tbodyHTML += `
+                                    <td>
+                                        ${taskData.task_title} (${taskData.hours_per_day}h)
+                                        <input type="checkbox" class="archive-checkbox" ${isChecked} disabled>
+                                    </td>
+                                `;
+                            }
+                        });
+                    }
+                    tbodyHTML += `</tr>`;
+                });
+                tbodyHTML += "</tbody>";
+                
+                table.innerHTML = theadHTML + tbodyHTML;
+                card.appendChild(table);
+
+                // 3. بناء وتجهيز مساحة القراف البياني المستقل للأسبوع الحالي
+                const chartWrapper = document.createElement("div");
+                chartWrapper.className = "chart-wrapper";
+                
+                const canvas = document.createElement("canvas");
+                canvas.id = `chart-${week.id}`; // توليد آيدي فريد لكل قراف لمنع تداخل اللوحات
+                
+                chartWrapper.appendChild(canvas);
+                card.appendChild(chartWrapper);
+
+                // 4. بناء شريط الملاحظات والنجوم التقييمية بالأسفل
+                const reviewSection = document.createElement("div");
+                reviewSection.className = "review-section";
+                
+                // بناء النجوم الملونة هندسياً بناءً على الرقم المحفوظ (1-5)
+                let starsHTML = "";
+                for (let i = 1; i <= 5; i++) {
+                    starsHTML += i <= week.ratingStars ? "★" : "☆";
+                }
+
+                reviewSection.innerHTML = `
+                    <div class="notes-display"><strong>💬 الملاحظات المكتوبة:</strong> ${week.notes || "لا توجد ملاحظات لهذا الأسبوع."}</div>
+                    <div class="stars-display">التقييم: ${starsHTML}</div>
+                `;
+                card.appendChild(reviewSection);
+
+                // حقن البطاقة التكرارية المتكاملة داخل القائمة الرئيسية للأرشيف
+                archiveList.appendChild(card);
+
+                // 5. استدعاء مكتبة Chart.js فوراً لرسم منحنى السهم الأنيق الخاص بهذا الأسبوع
+                let rotatedScores = [...week.graphScores].reverse(); // قلب المصفوفة للحفاظ على الاتجاه العربي
+                
+                new Chart(canvas.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: week.orderedDays,
+                        datasets: [{
+                            data: rotatedScores,
+                            borderColor: '#ffffff',
+                            borderWidth: 4,
+                            tension: 0, // خطوط حادة وانكسارات واضحة مطابقة للتصميم النظيف المرفق
+                            pointBackgroundColor: '#000000', // النقاط سوداء داكنة من الداخل
+                            pointBorderColor: '#ffffff',     // إطار أبيض ناصع حول النقطة السوداء
+                            pointBorderWidth: 3,
+                            pointRadius: 6,
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { 
+                                reverse: true, // تسيير الأيام من اليمين لليسار عربي R-T-L
+                                grid: { display: false }, 
+                                ticks: { color: '#ffffff', font: { fontWeight: '600' } } 
+                            },
+                            y: {
+                                position: 'right', // التقييمات ملتصقة باليمين كباقي الصفحات
+                                min: 0,
+                                max: 100,
+                                ticks: {
+                                    stepSize: 33.33,
+                                    color: '#ffffff',
+                                    font: { fontWeight: '600' },
+                                    callback: function(value) {
+                                        if (value === 0) return 'سيء';
+                                        if (value > 30 && value < 40) return 'عادي';
+                                        if (value > 60 && value < 70) return 'جيد';
+                                        if (value === 100) return 'مثالي';
+                                        return '';
+                                    }
+                                },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)', drawBorder: false }
+                            }
+                        },
+                        plugins: { 
+                            legend: { display: false } 
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,10 +1,94 @@
-.index{
- display: flex;
-  justify-content: center; 
-  align-items: center;    
-  min-height: 100vh;      
-  margin: 0;  flex-direction: column;  
-  gap: 30px;             
+/* تنسيق جسم الصفحة الأساسي باستخدام الـ Class الخاص بكِ */
+body.index {
+    background-color: #4a8ca8; /* نفس درجة اللون الأزرق المعتمدة في تطبيقك */
+    display: flex;
+    justify-content: center; 
+    align-items: center;    
+    min-height: 100vh;      
+    margin: 0;  
+    flex-direction: column;  
+    gap: 30px;      
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+    overflow: hidden;
+}
 
+/* حاوية المحتوى والترحيب */
+.welcome-container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 40px 60px;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    max-width: 500px;
+    width: 90%;
+}
 
+/* العنوان الرئيسي */
+.welcome-container h1 {
+    margin: 0;
+    font-size: 240%;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* النص الفرعي المقترح */
+.welcome-container p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 110%;
+    line-height: 1.6;
+}
+
+/* زر إنشاء الجدول الزمني */
+.welcome-container button {
+    width: 100%;
+    max-width: 300px;
+    height: 55px;
+    font-size: 130%;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+    background-color: #3D404D; /* الرمادي الداكن المتناسق مع الواجهة الأخرى */
+    color: aliceblue;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.welcome-container button:hover {
+    background-color: #2f323d;
+    transform: translateY(-2px);
+}
+
+.welcome-container button:active {
+    transform: translateY(0);
+}
+
+/* زر الأرشيف العائم في الأعلى */
+.archive-nav-btn {
+    position: absolute; 
+    top: 25px; 
+    left: 25px; 
+    background: #2c3e50; 
+    color: white; 
+    padding: 12px 20px; 
+    border-radius: 8px; 
+    text-decoration: none; 
+    font-weight: bold; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: background 0.2s;
+    font-size: 95%;
+}
+
+.archive-nav-btn:hover {
+    background: #1a252f;
 }

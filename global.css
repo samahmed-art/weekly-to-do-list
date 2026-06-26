@@ -2,3 +2,14 @@ body{
 margin: 0%;
 background-color:#5591AE
 }
+.heart-icon {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 32px;  
+  height: 32px;
+  color: #e7e7e7; 
+  border: none;
+  font-size: 30px;
+  background-color:#5591AE;
+}
