@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أرشيف الأسابيع السابقة</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
         body {
             background-color: #4a8ca8; /* نفس درجة اللون الأزرق الخاصة بتطبيقك */
@@ -175,7 +176,7 @@
 <body>
 
     <div class="archive-container">
-        <a href="index.html" class="back-btn">⬅ العودة لصفحة الإنشاء</a>
+        <a onclick="goBack()" class="back-btn">⬅</a>
         
         <h1 class="archive-title">📁 أرشيف الجداول والتقييمات الأسبوعية</h1>
         
@@ -183,6 +184,9 @@
     </div>
 
     <script>
+        function goBack() {
+    window.history.back();
+}
         document.addEventListener("DOMContentLoaded", () => {
             const archiveList = document.getElementById("archive-list");
             

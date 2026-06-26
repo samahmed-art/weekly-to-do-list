@@ -1,5 +1,4 @@
-//show hidden fields (fiexd ,event options )
-// =========================================================
+
 // التحكم في ظهور واختفاء الحقول بناءً على نوع المهمة
 // =========================================================
 document.addEventListener("DOMContentLoaded", () => {
@@ -53,8 +52,25 @@ const orderedDays = [
 var Tasks = [];
 var finalSchedule = [];
 var varTotalCompletedHours = 0; 
-const simulatedDayIndex = 0;
-// ==========================================
+// =========================================================
+// حساب الـ Index تلقائياً بناءً على تاريخ إنشاء الجدول
+// =========================================================
+let simulatedDayIndex = 0; 
+const creationTimeText = localStorage.getItem("scheduleCreationDate");
+
+if (creationTimeText) {
+    const creationDate = new Date(creationTimeText);
+    creationDate.setHours(0, 0, 0, 0); // تصفير الوقت للمقارنة بالأيام فقط
+
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
+
+    // حساب فرق الأيام
+    const timeDiff = todayDate.getTime() - creationDate.getTime();
+    const daysPassed = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+    simulatedDayIndex = daysPassed >= 0 ? daysPassed : 0;
+}// ==========================================
 // 1️⃣ محرك صفحة إنشاء المهام (الصفحة الأولى)
 // ==========================================
 // ==========================================
@@ -197,7 +213,9 @@ if (addTaskBtn && createTableBtn) {
         localStorage.setItem("myCreatedSchedule", JSON.stringify(schedual));
         localStorage.setItem("myCreatedTasks", JSON.stringify(Tasks));
         
-        Tasks = []; // تصفير المصفوفة في الذاكرة الحالية
+        Tasks = [];
+        // حفظ تاريخ البداية الفعلي للأسبوع
+localStorage.setItem("scheduleCreationDate", new Date().toISOString()); // تصفير المصفوفة في الذاكرة الحالية
         window.location.href = "dashboard.html"; 
     });
 }
@@ -413,6 +431,24 @@ if (myTable) {
                             checkbox.className = "cell-class";
                             checkbox.checked = taskData.task_status; 
 
+                            
+            if (simulatedDayIndex > 6) {
+
+                checkbox.disabled = true;
+
+                cellsTd.style.opacity = "0.5";
+
+            } else if (index !== simulatedDayIndex) {
+
+                checkbox.disabled = true;
+
+                cellsTd.style.opacity = "0.5";
+
+            } else {
+
+                cellsTd.style.opacity = "1";  
+
+            }
                             cellsTd.appendChild(checkbox);
                         }
                         row.appendChild(cellsTd); 
