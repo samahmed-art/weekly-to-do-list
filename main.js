@@ -1,23 +1,37 @@
 //show hidden fields (fiexd ,event options )
-// const task_type = document.getElementById("task-type");
+// =========================================================
+// التحكم في ظهور واختفاء الحقول بناءً على نوع المهمة
+// =========================================================
+document.addEventListener("DOMContentLoaded", () => {
+    const taskTypeSelect = document.getElementById("task-type");
+    const fixedFields = document.getElementById("fixedFields");
+    const eventFields = document.getElementById("eventFields");
 
-// const fixedFields = document.getElementById("fixedFields");
-// const eventFields = document.getElementById("eventFields");
+    if (taskTypeSelect && fixedFields && eventFields) {
+        
+        // دالة تحديث الحقول بناءً على القيمة المختارة
+        function toggleFields() {
+            const selectedValue = taskTypeSelect.value;
 
-// task_type.addEventListener("change", () => {
+            // إخفاء الحقول الافتراضية أولاً
+            fixedFields.style.display = "none";
+            eventFields.style.display = "none";
 
-//   fixedFields.style.display = "none";
-//   eventFields.style.display = "none";
+            // إظهار الحقل المناسب بناءً على الخيار
+            if (selectedValue === "fixed") {
+                fixedFields.style.display = "block"; // إظهار اختيار الأيام
+            } else if (selectedValue === "event") {
+                eventFields.style.display = "block"; // إظهار اختيار يوم الحدث
+            }
+        }
 
-//   if (task_type.value === "fixed") {
-//     fixedFields.style.display = "block";
-//   }
+        // تشغيل الدالة فوراً عند تحميل الصفحة للتأكد من الحالة الافتراضية
+        toggleFields();
 
-//   if (task_type.value === "event") {
-//     eventFields.style.display = "block";
-//   }
-
-// });
+        // مراقبة التغيير عندما يختار المستخدم بنفسه
+        taskTypeSelect.addEventListener("change", toggleFields);
+    }
+});
 // -------------------------------------------------------------------
 
  // ==========================================
@@ -39,7 +53,10 @@ const orderedDays = [
 var Tasks = [];
 var finalSchedule = [];
 var varTotalCompletedHours = 0; 
-const simulatedDayIndex = 6;
+const simulatedDayIndex = 0;
+// ==========================================
+// 1️⃣ محرك صفحة إنشاء المهام (الصفحة الأولى)
+// ==========================================
 // ==========================================
 // 1️⃣ محرك صفحة إنشاء المهام (الصفحة الأولى)
 // ==========================================
@@ -61,43 +78,118 @@ if (addTaskBtn && createTableBtn) {
             return;
         }
 
+        // 📦 تجميع الخيارات المخصصة بناءً على نوع المهمة
+        let selectedDays = [];
+        
+        if (task_type === "fixed") {
+            // جلب الأيام التي وضع المستخدم عليها علامة صح (Thursday, Friday, etc.)
+            const checkedBoxes = document.querySelectorAll("#fixedFields input[type='checkbox']:checked");
+            checkedBoxes.forEach(box => {
+                // تحويل القيمة إلى صيغة الأيام المستخدمة عندك في الـ Array (خميس، جمعه..)
+                if (box.value === "Sunday") selectedDays.push("احد");
+                if (box.value === "Monday") selectedDays.push("اثنين");
+                if (box.value === "Tuesday") selectedDays.push("ثلاثاء");
+                if (box.value === "Wednesday") selectedDays.push("اربعاء");
+                if (box.value === "Thursday") selectedDays.push("خميس");
+                if (box.value === "Friday") selectedDays.push("جمعه");
+                if (box.value === "Saturday") selectedDays.push("سبت");
+            });
+
+            if (selectedDays.length === 0) {
+                alert("الرجاء اختيار يوم واحد على الأقل لهذه المهمة!");
+                return;
+            }
+        } else if (task_type === "event") {
+            // جلب اليوم المختار من قائمة الموعد الفردي وتحويله للصيغة المختصرة المتوافقة مع DAYS_OF_WEEK
+            const eventDaySelect = document.getElementById("eventDay").value;
+            let mappedDay = eventDaySelect.replace("الأحد", "احد")
+                                          .replace("الاثنين", "اثنين")
+                                          .replace("الثلاثاء", "ثلاثاء")
+                                          .replace("الأربعاء", "اربعاء")
+                                          .replace("الخميس", "خميس")
+                                          .replace("الجمعة", "جمعه")
+                                          .replace("السبت", "سبت");
+            selectedDays.push(mappedDay);
+        }
+
         var task = {
             id: crypto.randomUUID(),
             title: task_title,
             type: task_type,
-            totalhours: Number(task_total_hours)
+            totalhours: Number(task_total_hours),
+            targetDays: selectedDays // حفظ الأيام المستهدفة داخل كائن المهمة
         };
         
         Tasks.push(task);
         console.log("المهمة المضافة حالياً:", Tasks);
         
-        // مسح خانات المدخلات لتسهيل كتابة المهمة التالية
+        // مسح خانات المدخلات وتصفير الـ Checkboxes لتسهيل كتابة المهمة التالية
         document.getElementById("task-title").value = "";
         document.getElementById("task-total-hours").value = "";
+        document.getElementById("task-type").value = "flexible";
+        document.querySelectorAll("#fixedFields input[type='checkbox']").forEach(b => b.checked = false);
+        
+        // إخفاء الحقول الإضافية لتعود للحالة الافتراضية
+        document.getElementById("fixedFields").style.display = "none";
+        document.getElementById("eventFields").style.display = "none";
+        
+        alert(`تمت إضافة المهمة [${task_title}] بنجاح!`);
     });
 
-    // حدث إنشاء الجدول والانتقال
+    // حدث إنشاء الجدول والانتقال وتحويل المنطق البرمجي ذكياً
     createTableBtn.addEventListener("click", () => {
+        // إذا ضغط المستخدم إنشاء مباشرة والمصفوفة فارغة، نحاول أخذ البيانات المكتوبة حالياً في الحقول تلقائياً كآخر مهمة
+        var task_title = document.getElementById("task-title").value.trim();
+        var task_total_hours = document.getElementById("task-total-hours").value.trim();
+        
+        if (Tasks.length === 0 && task_title !== "" && task_total_hours !== "") {
+            document.getElementById("add-new-task").click();
+        }
+
         if (Tasks.length === 0) {
             alert("الرجاء إضافة مهام أولاً قبل الضغط على إنشاء!");
             return;
         }
 
-        // الحذف المسبق لمنع تكدس الذاكرة القديمة
         localStorage.removeItem("myCreatedSchedule");
         localStorage.removeItem("myCreatedTasks");
 
         var schedual = []; 
 
+        // بناء الجدول اليومي بناءً على نوع وبنية كل مهمة بشكل مستقل
         orderedDays.forEach(day => {
             var dayObj = {
                 dayName: day,
-                task: Tasks.map(task => ({
-                    task_title: task.title, 
-                    hours_per_day: (task.totalhours / 7).toFixed(1),   
-                    task_status: false // تولد دائماً فارغة في الجدول الجديد
-                })),
+                task: []
             };
+
+            Tasks.forEach(task => {
+                let hoursForThisDay = 0;
+                let isIncluded = false;
+
+                if (task.type === "flexible") {
+                    // التوزيع التلقائي: تقسيم الساعات بالتساوي على الـ 7 أيام
+                    hoursForThisDay = (task.totalhours / 7).toFixed(1);
+                    isIncluded = true;
+                } else {
+                    // إذا كان الخيار (اختيار الأيام) أو (حدث): نتحقق هل اليوم الحالي من ضمن الأيام المستهدفة؟
+                    if (task.targetDays.includes(day)) {
+                        hoursForThisDay = (task.totalhours / task.targetDays.length).toFixed(1);
+                        isIncluded = true;
+                    } else {
+                        hoursForThisDay = 0;
+                        isIncluded = false;
+                    }
+                }
+
+                dayObj.task.push({
+                    task_title: task.title,
+                    hours_per_day: hoursForThisDay,
+                    is_included: isIncluded, // خاصية لتحديد إذا كانت المهمة تظهر في هذا اليوم أم يوضع مكانها '--'
+                    task_status: false
+                });
+            });
+
             schedual.push(dayObj);
         });
 
@@ -106,10 +198,9 @@ if (addTaskBtn && createTableBtn) {
         localStorage.setItem("myCreatedTasks", JSON.stringify(Tasks));
         
         Tasks = []; // تصفير المصفوفة في الذاكرة الحالية
-        window.location.href = "dashboard.html"; // تأكد من اسم ملف صفحة الجدول عندك
+        window.location.href = "dashboard.html"; 
     });
 }
-
 // ==========================================
 // 2️⃣ محرك صفحة الـ Dashboard والجدول (الصفحة الثانية)
 // ==========================================
@@ -425,56 +516,128 @@ if (myTable) {
         });
     }
 
+  // =========================================================
+    // [مطور وآمن] إضافة مهمة بمنتصف الأسبوع مع التحقق من الأيام
+    // =========================================================
     const addMidWeekTaskBtn = document.getElementById("add-mid-week-task-btn");
     if (addMidWeekTaskBtn) {
         addMidWeekTaskBtn.addEventListener("click", () => {
-            const taskTitle = prompt("أدخل اسم المهمة الجديدة:");
-            if (!taskTitle || taskTitle.trim() === "") return;
-
-            const totalHoursInput = prompt("أدخل إجمالي الساعات المطلوبة لهذه المهمة حتى نهاية الأسبوع:");
-            const totalHours = Number(totalHoursInput);
-            if (isNaN(totalHours) || totalHours <= 0) {
-                alert("الرجاء إدخال عدد ساعات صحيح!");
-                return;
-            }
-
             let currentDayInSchedule = (simulatedDayIndex > 6) ? 0 : simulatedDayIndex; 
             if (simulatedDayIndex > 6) {
                 alert("انتهى الأسبوع الحالي، لا يمكن إضافة مهام جديدة لهذا الجدول!");
                 return;
             }
 
-            const remainingDaysCount = 7 - currentDayInSchedule; 
-            const hoursPerRemainingDay = (totalHours / remainingDaysCount).toFixed(1);
+            // 1. طلب اسم المهمة
+            const taskTitle = prompt("أدخل اسم المهمة الجديدة:");
+            if (!taskTitle || taskTitle.trim() === "") return;
 
+            // 2. طلب إجمالي الساعات
+            const totalHoursInput = prompt("أدخل إجمالي الساعات المطلوبة لهذه المهمة:");
+            const totalHours = Number(totalHoursInput);
+            if (isNaN(totalHours) || totalHours <= 0) {
+                alert("الرجاء إدخال عدد ساعات صحيح!");
+                return;
+            }
+
+            // 3. طلب نوع المهمة 
+            const typeInput = prompt("أدخل نوع المهمة (اكتب 1 أو 2 أو 3):\n1 - توزيع تلقائي\n2 - اختيار أيام معينة\n3 - حدث / موعد فردي");
+            if (typeInput !== "1" && typeInput !== "2" && typeInput !== "3") {
+                alert("🚨 خطأ: خيار غير صحيح! يجب عليك كتابة رقم من الخيارات المتاحة (1 أو 2 أو 3) فقط.");
+                return; // إيقاف العملية بالكامل
+            }
+            let taskType = "flexible";
+            let targetDays = [];
+
+            if (typeInput === "2") {
+                taskType = "fixed";
+                const daysPrompt = prompt(`أدخل الأيام المحددة مفصولة بفاصلة (مثال: احد, ثلاثاء, خميس)\nالأيام المتاحة حالياً: (${orderedDays.join(" - ")})`);
+                
+                if (daysPrompt) {
+                    // تنظيف النص وتحويله لمصفوفة أيام
+                    const enteredDays = daysPrompt.split(",").map(d => d.trim());
+                    
+                    // 🛡️ فحص الأيام للتأكد من صحتها ومطابقتها للنظام
+                    let invalidDays = [];
+                    enteredDays.forEach(day => {
+                        if (orderedDays.includes(day)) {
+                            targetDays.push(day);
+                        } else {
+                            invalidDays.push(day);
+                        }
+                    });
+
+                    // 🚨 إذا كتب المستخدم نصاً عشوائياً أو يوماً غير صحيح
+                    if (invalidDays.length > 0) {
+                        alert(`خطأ: هذه الكلمات ليست أياماً صحيحة في هذا الأسبوع:\n[ ${invalidDays.join(" , ")} ]\nالرجاء المحاولة مجدداً وكتابة أيام صحيحة.`);
+                        return; // إيقاف العملية لمنع حفظ بيانات تالفة
+                    }
+                }
+                
+                if (targetDays.length === 0) {
+                    alert("لم يتم تحديد أي أيام! تم إلغاء العملية.");
+                    return;
+                }
+
+            } else if (typeInput === "3") {
+                taskType = "event";
+                const dayPrompt = prompt(`أدخل يوم الموعد الفردي تماماً كما هو مكتوب:\n(${orderedDays.join(" - ")})`);
+                
+                if (dayPrompt && orderedDays.includes(dayPrompt.trim())) {
+                    targetDays.push(dayPrompt.trim());
+                } else {
+                    alert("🚨 خطأ: اليوم المدخل غير صحيح أو لم يتم كتابته بشكل مطابق للأيام المعروضة!");
+                    return; // إيقاف العملية
+                }
+            }
+
+            // تجهيز كائن المهمة الجديدة بعد تخطي الفحوصات بنجاح
             const newMidWeekTask = {
                 id: crypto.randomUUID(),
                 title: taskTitle.trim(),
-                type: "fixed", 
-                totalhours: totalHours
+                type: taskType, 
+                totalhours: totalHours,
+                targetDays: targetDays
             };
+            
+            // جلب المصفوفة القديمة أولاً لعدم تصفير المهام الأخرى
+            var savedTasks = localStorage.getItem("myCreatedTasks");
+            Tasks = savedTasks ? JSON.parse(savedTasks) : [];
+            
             Tasks.push(newMidWeekTask);
             localStorage.setItem("myCreatedTasks", JSON.stringify(Tasks));
 
+            // 4. تحديث الجدول اليومي (finalSchedule) بناءً على المدخلات السليمة
             finalSchedule.forEach((dayObj, index) => {
-                let taskDetails = {
-                    task_title: newMidWeekTask.title,
-                    task_status: false
-                };
+                let hoursForThisDay = 0;
+                let isIncluded = false;
 
+                // التحقق من الأيام المتاحة زمنياً (من الحاضر للمستقبل)
                 if (index >= currentDayInSchedule) {
-                    taskDetails.hours_per_day = hoursPerRemainingDay;
-                    taskDetails.is_included = true; 
-                } else {
-                    taskDetails.hours_per_day = 0; 
-                    taskDetails.is_included = false; 
+                    if (taskType === "flexible") {
+                        const remainingDaysCount = 7 - currentDayInSchedule; 
+                        hoursForThisDay = (totalHours / remainingDaysCount).toFixed(1);
+                        isIncluded = true;
+                    } else {
+                        if (targetDays.includes(dayObj.dayName)) {
+                            hoursForThisDay = (totalHours / targetDays.length).toFixed(1);
+                            isIncluded = true;
+                        }
+                    }
                 }
 
-                dayObj.task.push(taskDetails);
+                // إضافة المهمة للجدول
+                dayObj.task.push({
+                    task_title: newMidWeekTask.title,
+                    hours_per_day: hoursForThisDay,
+                    is_included: isIncluded,
+                    task_status: false
+                });
             });
 
+            // حفظ وإعادة التحميل
             localStorage.setItem("myCreatedSchedule", JSON.stringify(finalSchedule));
-            alert(`تمت إضافة مهمة [${taskTitle}] وتوزيعها بنجاح! 🎉`);
+            alert(`تمت إضافة مهمة منتصف الأسبوع [${taskTitle}] بنجاح وتوزيع ساعاتها! 🎉`);
             window.location.reload(); 
         });
     }

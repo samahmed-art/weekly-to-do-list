@@ -1,69 +1,217 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="global.css">
-    <title>Document</title>
+    <link rel="stylesheet" href="tasks.html"> <title>إدخال المهام والجدولة</title>
 </head>
-<body>
-    <div dir="rtl" >
-    <div  style="display: grid; height: 70vh; place-items: center;">
-    <div style="border: 1px solid rgb(136, 164, 178);  font-size: 50px;">
-    <label> عنوان المهمة</label>
-    <input  id="task-title" style="height: 50px; width: 50%;" placeholder="تمارين" type="text">
-    <br>
-        <br>
-        <label> عدد الساعات الاجمالي للاسبوع </label>
-    <input id="task-total-hours" style="height: 50px; width: 50%;"placeholder="10" type="number" value="21" >
-     <br>
-         <br>
-     <label>نوع المهمه</label>
-    <select id="task-type"  style="height: 50px; width: 50%;">
-        <option value="flexible">توزيع تلقائى</option>
-        <option value="fixed">اختيار الايام</option>
-        <option value="event">حدث\موعد</option>
-  
-    </select>
+<style>
+    /* تنسيق خلفية وجسم الصفحة الأساسي */
+body.tasks-page {
+    background-color: #4a8ca8; /* نفس اللون الأزرق الخاص بالتطبيق */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+}
+
+/* بطاقة المدخلات المركزية الأنيقة */
+.task-card {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    padding: 35px;
+    width: 100%;
+    max-width: 550px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    box-sizing: border-box;
+}
+
+/* تنظيم مجموعات حقول الإدخال */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+/* ستايل موحد لعناصر الإدخال والـ Select */
+.form-group input, 
+.form-group select,
+#eventFields select {
+    width: 100%;
+    height: 48px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.95);
+    color: #2c3e50;
+    font-size: 16px;
+    font-weight: 500;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus, 
+.form-group select:focus {
+    border-color: #3d404d;
+    box-shadow: 0 0 0 3px rgba(61, 64, 77, 0.2);
+}
+
+/* حقول الشروط الإضافية (الأيام والمواعيد) */
+.conditional-fields {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 15px 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.conditional-fields h4 {
+    margin: 0 0 12px 0;
+    font-size: 15px;
+    color: #ffffff;
+}
+
+/* توزيع مربعات اختيار الأيام بشكل شبكي مرن */
+.days-checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.days-checkbox-grid label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.days-checkbox-grid input[type="checkbox"] {
+    accent-color: #3d404d;
+    transform: scale(1.1);
+}
+
+/* حاوية الأزرار السفلية */
+.action-buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+    max-width: 550px;
+    margin-top: 25px;
+}
+
+/* الستايل الموحد للأزرار التفاعلية */
+.action-buttons-container button {
+    flex: 1;
+    height: 52px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* زر الحفظ الأساسي والجدولة */
+.btn-primary {
+    background-color: #3D404D; /* الرمادي الغامق المتناسق مع بقية المشروع */
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2b2d36;
+    transform: translateY(-2px);
+}
+
+/* زر إضافة مهمة أخرى */
+.btn-secondary {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.action-buttons-container button:active {
+    transform: translateY(0);
+}
+</style>
+<body class="tasks-page">
+
+    <div class="task-card">
+        <div class="form-group">
+            <label for="task-title">عنوان المهمة</label>
+            <input id="task-title" placeholder="تمارين، دراسة..." type="text">
+        </div>
+
+        <div class="form-group">
+            <label for="task-total-hours">عدد الساعات الإجمالي للأسبوع</label>
+            <input id="task-total-hours" placeholder="10" type="number" value="21">
+        </div>
+
+        <div class="form-group">
+            <label for="task-type">نوع المهمة</label>
+            <select id="task-type">
+                <option value="flexible">توزيع تلقائي</option>
+                <option value="fixed">اختيار الأيام</option>
+                <option value="event">حدث / موعد</option>
+            </select>
+        </div>
+
+        <div id="fixedFields" class="conditional-fields">
+            <h4>اختر الأيام للمهمة:</h4>
+            <div class="days-checkbox-grid">
+                <label><input type="checkbox" value="Thursday"> الخميس</label>
+                <label><input type="checkbox" value="Friday"> الجمعة</label>
+                <label><input type="checkbox" value="Saturday"> السبت</label>
+                <label><input type="checkbox" value="Sunday"> الأحد</label>
+                <label><input type="checkbox" value="Monday"> الاثنين</label>
+                <label><input type="checkbox" value="Tuesday"> الثلاثاء</label>
+                <label><input type="checkbox" value="Wednesday"> الأربعاء</label>
+            </div>
+        </div>
+
+        <div id="eventFields" class="conditional-fields">
+            <label for="eventDay">اختر يوم الحدث / الموعد:</label>
+            <select id="eventDay">
+                <option>الخميس</option>
+                <option>الجمعة</option>
+                <option>السبت</option>
+                <option>الأحد</option>
+                <option>الاثنين</option>
+                <option>الثلاثاء</option>
+                <option>الأربعاء</option>
+            </select>
+        </div>
     </div>
-    
-        </div>
-        <div style="display: flex; justify-content: center; gap: 16px; align-items: center;">
-          <button id="create-table" style="width: 20%; height: 50px ;text-align:center; font-size:200%; border-radius: 10px;border: none; background-color:#3D404D; color: aliceblue;" >انشاء جدول</button>
-        <button type="button"  id="add-new-task" style="width: 20%; height: 50px ;text-align:center; font-size:200%; border-radius: 10px;border: none; background-color:#3D404D; color: aliceblue;">أضافه مهمه اخرى</button>
-        </div>
-        <div id="fixedFields" style="display:none;">
 
-  <h4>اختر الأيام</h4>
+    <div class="action-buttons-container">
+        <button type="button" id="add-new-task" class="btn-secondary">أضف مهمة أخرى +</button>
+        <button id="create-table" class="btn-primary">إنشاء الجدول 🗓️</button>
+    </div>
 
-  <label><input type="checkbox" value="Thursday"> الخميس</label>
-  <label><input type="checkbox" value="Friday"> الجمعة</label>
-  <label><input type="checkbox" value="Saturday"> السبت</label>
-  <label><input type="checkbox" value="Sunday"> الأحد</label>
-  <label><input type="checkbox" value="Monday"> الاثنين</label>
-  <label><input type="checkbox" value="Tuesday"> الثلاثاء</label>
-  <label><input type="checkbox" value="Wednesday"> الأربعاء</label>
-
-</div>
-
-
-        <div id="eventFields" style="display:none;">
-
-  <label >اختر يوم الحدث\الموعد </label>
-
-  <select id="eventDay">
-    <option>الخميس</option>
-    <option>الجمعة</option>
-    <option>السبت</option>
-    <option>الأحد</option>
-    <option>الاثنين</option>
-    <option>الثلاثاء</option>
-    <option>الأربعاء</option>
-  </select>
-
-</div>
-</div>
+    <script src="main.js" defer></script>
 </body>
-                <script src="main.js" defer></script>
-
 </html>
