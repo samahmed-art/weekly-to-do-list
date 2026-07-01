@@ -52,6 +52,7 @@ const orderedDays = [
 var Tasks = [];
 var finalSchedule = [];
 var varTotalCompletedHours = 0; 
+
 // =========================================================
 // حساب الـ Index تلقائياً بناءً على تاريخ إنشاء الجدول
 // =========================================================
@@ -70,6 +71,12 @@ if (creationTimeText) {
     const daysPassed = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
 
     simulatedDayIndex = daysPassed >= 0 ? daysPassed : 0;
+    //to test the final score and pop up, you can change the DEBUG_DAYS to any number of days you want to simulate
+// const DEBUG_DAYS = 7; // غيّره إلى أي عدد أيام تريد
+// const timeDiff = todayDate.getTime() - creationDate.getTime();
+// const daysPassed = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+// simulatedDayIndex = daysPassed + DEBUG_DAYS;
 }// ==========================================
 // 1️⃣ محرك صفحة إنشاء المهام (الصفحة الأولى)
 // ==========================================
@@ -525,7 +532,7 @@ if (myTable) {
             }
 
             const weekRangeText = document.getElementById("week-range") ? document.getElementById("week-range").textContent : "أسبوع غير محدد";
-            const finalDailyScores = calculateDailyScores(); // الدالة هنا أصبحت مرئية تماماً الآن ومكشوفة للزر!
+            const finalDailyScores = calculateDailyScores(); 
 
             const currentWeekData = {
                 id: crypto.randomUUID(),
@@ -547,14 +554,12 @@ if (myTable) {
             localStorage.removeItem("myCreatedTasks");
             localStorage.removeItem("myWeeklyReview");
 
-            alert("تم حفظ الجدول بالكامل وأرشفته بنجاح! 🎉");
+            alert("تم حفظ الجدول بالكامل وأرشفته بنجاح");
             window.location.href = "index.html"; 
         });
     }
 
-  // =========================================================
-    // [مطور وآمن] إضافة مهمة بمنتصف الأسبوع مع التحقق من الأيام
-    // =========================================================
+
     const addMidWeekTaskBtn = document.getElementById("add-mid-week-task-btn");
     if (addMidWeekTaskBtn) {
         addMidWeekTaskBtn.addEventListener("click", () => {
@@ -593,7 +598,7 @@ if (myTable) {
                     // تنظيف النص وتحويله لمصفوفة أيام
                     const enteredDays = daysPrompt.split(",").map(d => d.trim());
                     
-                    // 🛡️ فحص الأيام للتأكد من صحتها ومطابقتها للنظام
+                    //  فحص الأيام للتأكد من مطابقتها للنظام
                     let invalidDays = [];
                     enteredDays.forEach(day => {
                         if (orderedDays.includes(day)) {
@@ -603,7 +608,7 @@ if (myTable) {
                         }
                     });
 
-                    // 🚨 إذا كتب المستخدم نصاً عشوائياً أو يوماً غير صحيح
+                    //  إذا كتب المستخدم نصاً عشوائياً أو يوم غير صحيح
                     if (invalidDays.length > 0) {
                         alert(`خطأ: هذه الكلمات ليست أياماً صحيحة في هذا الأسبوع:\n[ ${invalidDays.join(" , ")} ]\nالرجاء المحاولة مجدداً وكتابة أيام صحيحة.`);
                         return; // إيقاف العملية لمنع حفظ بيانات تالفة

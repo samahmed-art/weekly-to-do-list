@@ -1,0 +1,6 @@
+# Force all text files to normalize to LF on check-in
+* text=auto
+
+# Explicitly ensure node/npm configurations stick to standard endings
+package.json text eol=lf
+package-lock.json text eol=lf
